@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simple Frame", "Simple Frame\Simple Frame.vcxproj", "{A71CD729-AC98-40F1-89DD-21CD1B6463B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85A33540-9DAE-42F3-9AAE-407BD2ED29C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A71CD729-AC98-40F1-89DD-21CD1B6463B6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A71CD729-AC98-40F1-89DD-21CD1B6463B6}.Debug|Win32.Build.0 = Debug|Win32
+		{A71CD729-AC98-40F1-89DD-21CD1B6463B6}.Release|Win32.ActiveCfg = Release|Win32
+		{A71CD729-AC98-40F1-89DD-21CD1B6463B6}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
