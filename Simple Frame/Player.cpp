@@ -3,10 +3,10 @@
 #include "ResourceManager.h"
 
 
-const float walkSpeed = 6;
-const float jumpSpeed = -24;
-static const float gravity = 1.1;
-static const float terminalVelocity = 15;
+const float walkSpeed = 1.5;
+const float jumpSpeed = -6;
+static const float gravity = 0.2;
+static const float terminalVelocity = 3;
 static const sf::Vector2f startingPosition = sf::Vector2f(50.0, 50.0);
 
 
@@ -28,15 +28,25 @@ Player::~Player()
 
 void Player::update(int input)
 {
+
+
+	// Jumping
+	if ((input & InputHandler::Input::SPACE) && (isJumping == false))
+	{
+		mVelocity.y = jumpSpeed;
+		isJumping = true;
+	}
+
+
 	// Walk left
-	if (input == Input::LEFT)
+	if (input & InputHandler::Input::LEFT)
 	{
 		mVelocity.x = -walkSpeed;
 		currentAnimation = &walkLeft;
 	}
 
 	// Walk right
-	else if (input == Input::RIGHT)
+	else if (input & InputHandler::Input::RIGHT)
 	{
 		mVelocity.x = walkSpeed;
 		currentAnimation = &walkRight;
@@ -57,13 +67,6 @@ void Player::update(int input)
 	}
 
 
-
-	// Jumping
-	if ((input == Input::SPACE) && (isJumping == false))
-	{
-		mVelocity.y = jumpSpeed;
-		isJumping = true;
-	}
 
 	// Gravity & Terminal velocity
 	mVelocity.y += gravity;

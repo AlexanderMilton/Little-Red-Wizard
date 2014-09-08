@@ -16,48 +16,49 @@ InputHandler::~InputHandler()
 // Check and handle keyboard input
 int InputHandler::update()
 {
-	int input = Input::NONE;
+	// Reset input
+	int input = InputHandler::Input::NONE;
 
 	std::string dbgout;
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		input += Input::LEFT;
+		input += InputHandler::Input::LEFT;
 		dbgout += "LEFT ";
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		input += Input::RIGHT;
+		input += InputHandler::Input::RIGHT;
 		dbgout += "RIGHT ";
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
 	{
-		input += Input::CONFIRM;
+		input += InputHandler::Input::CONFIRM;
 		dbgout += "CONFIRM ";
 	}
 	
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
-		input += Input::ESCAPE;
+		input += InputHandler::Input::ESCAPE;
 		dbgout += "ESCAPE ";
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		input += Input::SPACE;
+		input += InputHandler::Input::SPACE;
 		dbgout += "SPACE ";
 	}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		input += Input::UP;
+		input += InputHandler::Input::UP;
 		dbgout += "UP ";
 	}
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		input += Input::DOWN;
+		input += InputHandler::Input::DOWN;
 		dbgout += "DOWN ";
 	}
 
