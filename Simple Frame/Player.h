@@ -27,6 +27,7 @@ private:
 	sf::Vector2f mPosition;
 	sf::Vector2f mVelocity;
 	bool isJumping;
+	bool isDoubleJumping;
 
 	sf::FloatRect ground;
 };

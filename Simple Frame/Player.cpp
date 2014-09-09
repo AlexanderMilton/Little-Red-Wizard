@@ -2,23 +2,25 @@
 #include "InputHandler.h"
 #include "ResourceManager.h"
 
+#include "DebugOut.h"
 
-const float walkSpeed = 1.5;
+const float walkSpeed = 1.8;
 const float jumpSpeed = -6;
-static const float gravity = 0.2;
-static const float terminalVelocity = 3;
+static const float gravity = 0.15;
+static const float terminalVelocity = 4;
 static const sf::Vector2f startingPosition = sf::Vector2f(50.0, 50.0);
 
 
 Player::Player() :
 	isJumping(true),
+	isDoubleJumping(true),
 	mPosition(startingPosition),
-	walkLeft("left.png", 100, 3),
-	walkRight("right.png", 100, 3),
+	walkLeft("left.png", 140, 2),
+	walkRight("right.png", 140, 2),
 	idleLeft("left_idle.png", 100, 1),
 	idleRight("right_idle.png", 100, 1),
 	currentAnimation(&idleRight),
-	ground(0, 400, 720, 10)
+	ground(0, 500, 720, 10)
 {
 }
 
@@ -30,13 +32,19 @@ void Player::update(int input)
 {
 
 
+	// Double Jumping
+	if ((input & InputHandler::Input::SPACE) && (isJumping == true) && (isDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
+	{
+		mVelocity.y = jumpSpeed;
+		isDoubleJumping = true;
+	}
+
 	// Jumping
-	if ((input & InputHandler::Input::SPACE) && (isJumping == false))
+	if ((input & InputHandler::Input::SPACE) && (isJumping == false) && (isDoubleJumping == false))
 	{
 		mVelocity.y = jumpSpeed;
 		isJumping = true;
 	}
-
 
 	// Walk left
 	if (input & InputHandler::Input::LEFT)
@@ -86,6 +94,7 @@ void Player::update(int input)
 	
 	if (ground.intersects(playerBoundingBox) && mVelocity.y > 0 && playerBoundingBox.top + playerBoundingBox.height / 2 < ground.top){
 		isJumping = false;
+		isDoubleJumping = false;
 		mVelocity.y = 0;
 		mPosition.y = ground.top - playerBoundingBox.height;
 	}
