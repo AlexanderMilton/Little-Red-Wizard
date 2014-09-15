@@ -2,7 +2,7 @@
 #include <cassert>
 #include "DebugOut.h"
 
-// TODO: we might want to read this from a config file or something
+
 const std::string 
 	ResourceManager::GRAPHICS_PATH		= "./resources/graphics/",
 	ResourceManager::SOUND_PATH			= "./resources/sounds/",
@@ -13,11 +13,12 @@ const std::string
 	ResourceManager::MENU_XML_PATH		= "./resources/xml/menus/",
 	ResourceManager::CONFIG_XML_PATH	= "./resources/xml/config/";
 
-std::map <std::string, sf::Texture*> ResourceManager::mTextures;
-std::map <std::string, sf::SoundBuffer*> ResourceManager::mSoundBuffers;
-std::map <std::string, sf::Music*> ResourceManager::mMusics;
-std::map <std::string, tinyxml2::XMLDocument*> ResourceManager::mXML;
-std::map <std::string, sf::Font*> ResourceManager::mFonts;
+
+std::map <std::string, std::unique_ptr <sf::Texture>> mTextures;
+std::map <std::string, std::unique_ptr <sf::SoundBuffer>> mSoundBuffers;
+std::map <std::string, std::unique_ptr <sf::Music>> mMusics;
+std::map <std::string, std::unique_ptr <tinyxml2::XMLDocument>> mXML;
+std::map <std::string, std::unique_ptr <sf::Font>> mFonts;
 
 
 ResourceManager::ResourceManager()
@@ -27,7 +28,7 @@ ResourceManager::ResourceManager()
 void ResourceManager::destroy()
 {
 	// Destroy and deallocate all loaded resources
-
+	/*
 	for(auto i = mTextures.begin(); i != mTextures.end(); )
 	{
 		delete i->second;
@@ -56,7 +57,7 @@ void ResourceManager::destroy()
 	{
 		delete i->second;
 		i = mFonts.erase(i);
-	}
+	}*/
 }
 
 // Fetch a sprite by getting the respective image filename
@@ -64,7 +65,7 @@ const sf::Texture& ResourceManager::getTexture(std::string fileName)
 {
 	if(mTextures.find(fileName) == mTextures.end())
 	{
-		sf::Texture* newTexture = new sf::Texture();
+		auto newTexture = std::unique_ptr<sf::Texture>(new sf::Texture());
 		if(fileName == "")
 		{
 			newTexture->create(0,0);			
@@ -74,7 +75,7 @@ const sf::Texture& ResourceManager::getTexture(std::string fileName)
 		{
 			newTexture->loadFromFile(GRAPHICS_PATH + fileName);
 		}
-		mTextures[fileName] = newTexture;
+		mTextures[fileName] = std::move(newTexture);
 	}
 
 	return *mTextures[fileName];
@@ -85,7 +86,7 @@ const sf::SoundBuffer& ResourceManager::getSoundBuffer(std::string fileName)
 {
 	if(mSoundBuffers.find(fileName) == mSoundBuffers.end())
 	{
-		sf::SoundBuffer* newSoundBuffer = new sf::SoundBuffer();
+		auto newSoundBuffer = std::unique_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
 		if(fileName != "")
 		{
 			newSoundBuffer->loadFromFile(SOUND_PATH + fileName);
@@ -94,7 +95,7 @@ const sf::SoundBuffer& ResourceManager::getSoundBuffer(std::string fileName)
 		{
 			dbgo::println("ResourceManager.cpp: Empty fileName! SoundBuffer");
 		}
-		mSoundBuffers[fileName] = newSoundBuffer;
+		mSoundBuffers[fileName] = std::move(newSoundBuffer);
 	}
 
 	return *mSoundBuffers[fileName];
@@ -106,10 +107,10 @@ sf::Music& ResourceManager::getMusic(std::string fileName)
 {
 	if(mMusics.find(fileName) == mMusics.end())
 	{
-		sf::Music* newMusic = new sf::Music();
+		auto newMusic = std::unique_ptr<sf::Music>(new sf::Music());
 		bool success = newMusic->openFromFile(MUSIC_PATH + fileName);
 		assert(success);
-		mMusics[fileName] = newMusic;
+		mMusics[fileName] = std::move(newMusic);
 	}
 
 	return *mMusics[fileName];
@@ -140,9 +141,9 @@ const sf::Font& ResourceManager::getFont(std::string fileName)
 {
 	if(mFonts.find(fileName) == mFonts.end())
 	{
-		sf::Font* newFont = new sf::Font();
+		auto newFont = std::unique_ptr<sf::Font>(new sf::Font());
 		newFont->loadFromFile(FONT_PATH + fileName);
-		mFonts[fileName] = newFont;
+		mFonts[fileName] = std::move(newFont);
 	}
 
 	return *mFonts[fileName];
@@ -152,7 +153,7 @@ const tinyxml2::XMLDocument& ResourceManager::getXML(std::string path, std::stri
 {
 	if(mXML.find(fileName) == mXML.end())
 	{
-		tinyxml2::XMLDocument* newXML = new tinyxml2::XMLDocument();
+		auto newXML = std::unique_ptr<tinyxml2::XMLDocument>(new tinyxml2::XMLDocument());
 		const std::string filepath = path + fileName + ".xml";
 		tinyxml2::XMLError retVal = newXML->LoadFile(filepath.c_str());
 		if(retVal != tinyxml2::XML_NO_ERROR)
@@ -161,7 +162,7 @@ const tinyxml2::XMLDocument& ResourceManager::getXML(std::string path, std::stri
 			assert(false);
 			std::exit(retVal);
 		}
-		mXML[fileName] = newXML;
+		mXML[fileName] = std::move(newXML);
 	}
 
 	return *mXML[fileName];

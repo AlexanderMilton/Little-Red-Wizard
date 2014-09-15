@@ -1,27 +1,30 @@
 #include "Player.h"
 #include "InputHandler.h"
 #include "ResourceManager.h"
-
 #include "DebugOut.h"
+#include "EntityManager.h"
 
-const float walkSpeed = 1.8;
-const float jumpSpeed = -6;
-static const float gravity = 0.15;
-static const float terminalVelocity = 4;
+const float walkSpeed = 1.8f;
+const float jumpSpeed = -6.0f;
+static const float gravity = 0.15f;
+static const float terminalVelocity = 4.0f;
+static const float reloadSpeed = 100.0f;
 static const sf::Vector2f startingPosition = sf::Vector2f(50.0, 50.0);
 
 
 Player::Player() :
-	isJumping(true),
-	isDoubleJumping(true),
+	mIsJumping(true),
+	mIsDoubleJumping(true),
+	mFacingLeft(false),
 	mPosition(startingPosition),
-	walkLeft("left.png", 140, 2),
-	walkRight("right.png", 140, 2),
-	idleLeft("left_idle.png", 100, 1),
-	idleRight("right_idle.png", 100, 1),
-	currentAnimation(&idleRight),
+	walkLeft(new Animation("left.png", 140, 2)),
+	walkRight(new Animation("right.png", 140, 2)),
+	idleLeft(new Animation("left_idle.png", 100, 1)),
+	idleRight(new Animation("right_idle.png", 100, 1)),
+	currentAnimation(std::move(idleRight)),
 	ground(0, 500, 720, 10)
 {
+	mReloadTimer.restart();
 }
 
 Player::~Player()
@@ -30,45 +33,77 @@ Player::~Player()
 
 void Player::update(int input)
 {
+	// Casting spells
+	if (input & InputHandler::Input::M_LEFT)
+	{
 
+		if (mReloadTimer.getElapsedTime().asMilliseconds() > reloadSpeed)
+		{
+			mIsReloading = false;
+		}
+
+		else
+		{
+			mIsReloading = true;
+		}
+
+		// We need a delay in the firing ability, 
+		if (mIsReloading == false)
+		{
+			// Check facing direction to determine the spawn origin of the projectile
+			if (mFacingLeft == true)
+			{
+				EntityManager::fireProjectile(sf::Vector2f(mPosition.x, mPosition.y - (getBoundingBox().height / 2)));
+				mReloadTimer.restart();
+			}
+
+			if (mFacingLeft == false)
+			{
+				EntityManager::fireProjectile(sf::Vector2f(mPosition.x + (getBoundingBox().width), mPosition.y - (getBoundingBox().height / 2)));
+				mReloadTimer.restart();
+			}
+		}
+	}
 
 	// Double Jumping
-	if ((input & InputHandler::Input::SPACE) && (isJumping == true) && (isDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
+	if ((input & InputHandler::Input::SPACE) && (mIsJumping == true) && (mIsDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
 	{
 		mVelocity.y = jumpSpeed;
-		isDoubleJumping = true;
+		mIsDoubleJumping = true;
 	}
 
 	// Jumping
-	if ((input & InputHandler::Input::SPACE) && (isJumping == false) && (isDoubleJumping == false))
+	if ((input & InputHandler::Input::SPACE) && (mIsJumping == false) && (mIsDoubleJumping == false))
 	{
 		mVelocity.y = jumpSpeed;
-		isJumping = true;
+		mIsJumping = true;
 	}
 
 	// Walk left
 	if (input & InputHandler::Input::LEFT)
 	{
 		mVelocity.x = -walkSpeed;
-		currentAnimation = &walkLeft;
+		currentAnimation = std::move(walkLeft);
+		mFacingLeft = true;
 	}
 
 	// Walk right
 	else if (input & InputHandler::Input::RIGHT)
 	{
 		mVelocity.x = walkSpeed;
-		currentAnimation = &walkRight;
+		currentAnimation = std::move(walkRight);
+		mFacingLeft = false;
 	}
 
 	// Idle
 	else
 	{
 		if (mVelocity.x > 0.1f){
-			currentAnimation = &idleRight;
+			currentAnimation = std::move(idleRight);
 		}
 
 		if (mVelocity.x < -0.1f){
-			currentAnimation = &idleLeft;
+			currentAnimation = std::move(idleLeft);
 		}
 
 		mVelocity.x = 0;
@@ -88,15 +123,15 @@ void Player::update(int input)
 	
 
 	// Ground and Wall collision
-	playerBoundingBox = getBoundingBox();
-	playerBoundingBox.left = mPosition.x;
-	playerBoundingBox.top = mPosition.y;
+	mPlayerBoundingBox = getBoundingBox();
+	mPlayerBoundingBox.left = mPosition.x;
+	mPlayerBoundingBox.top = mPosition.y;
 	
-	if (ground.intersects(playerBoundingBox) && mVelocity.y > 0 && playerBoundingBox.top + playerBoundingBox.height / 2 < ground.top){
-		isJumping = false;
-		isDoubleJumping = false;
+	if (ground.intersects(mPlayerBoundingBox) && mVelocity.y > 0 && mPlayerBoundingBox.top + mPlayerBoundingBox.height / 2 < ground.top){
+		mIsJumping = false;
+		mIsDoubleJumping = false;
 		mVelocity.y = 0;
-		mPosition.y = ground.top - playerBoundingBox.height;
+		mPosition.y = ground.top - mPlayerBoundingBox.height;
 	}
 
 
@@ -114,7 +149,7 @@ void Player::update(int input)
 	currentAnimation->setPosition(mPosition);
 }
 
-void Player::draw(sf::RenderWindow * window)
+void Player::draw(std::shared_ptr <sf::RenderWindow> window)
 {
 	window->draw(getSprite());
 }

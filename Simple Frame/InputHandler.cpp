@@ -45,26 +45,22 @@ int InputHandler::update()
 		input += InputHandler::Input::ESCAPE;
 		dbgout += "ESCAPE ";
 	}
-
-
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		if (isSpacePressed == false)
 		{
-			if (isSpacePressed == false)
-			{
-				input += InputHandler::Input::SPACE;
-				isSpacePressed = true;
-			}
+			input += InputHandler::Input::SPACE;
+			isSpacePressed = true;
 		}
-
-		else
-		{
-			isSpacePressed = false;
-		}
-
 		dbgout += "SPACE ";
 	}
 
+	else
+	{
+		isSpacePressed = false;
+	}
+	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		input += InputHandler::Input::UP;
@@ -75,6 +71,18 @@ int InputHandler::update()
 	{
 		input += InputHandler::Input::DOWN;
 		dbgout += "DOWN ";
+	}
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		input += InputHandler::Input::M_LEFT;
+		dbgout += "M_LEFT ";
+	}
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	{
+		input += InputHandler::Input::M_RIGHT;
+		dbgout += "M_RIGHT ";
 	}
 
 

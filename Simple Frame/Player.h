@@ -1,8 +1,13 @@
 #ifndef _PLAYER_
 #define _PLAYER_
 
-#include "Animation.h"
 #include "SFML\Graphics\RenderWindow.hpp"
+#include "SFML\System\Vector2.hpp"
+
+#include "Animation.h"
+#include "Projectile.h"
+
+#include <memory>
 
 class Player
 {
@@ -11,25 +16,28 @@ public:
 	~Player();
 
 	void update(int input);
-	void draw(sf::RenderWindow* window);
+	void draw(std::shared_ptr <sf::RenderWindow> window);
 	const sf::Sprite& getSprite() const;
 	const sf::Vector2f& getPosition() const;
 	sf::FloatRect getBoundingBox();
 
 private:
-	Animation walkLeft;
-	Animation idleLeft;
-	Animation walkRight;
-	Animation idleRight;
-	Animation* currentAnimation;
+	std::unique_ptr <Animation>  walkLeft;
+	std::unique_ptr <Animation>  idleLeft;
+	std::unique_ptr <Animation>  walkRight;
+	std::unique_ptr <Animation>  idleRight;
+	std::unique_ptr <Animation> currentAnimation;
 	
-	sf::FloatRect playerBoundingBox;
+	sf::FloatRect mPlayerBoundingBox;
 	sf::Vector2f mPosition;
 	sf::Vector2f mVelocity;
-	bool isJumping;
-	bool isDoubleJumping;
+	bool mIsJumping;
+	bool mIsDoubleJumping;
+	bool mFacingLeft;
+	bool mIsReloading;
+	sf::Clock mReloadTimer;
 
-	sf::FloatRect ground;
+	sf::FloatRect ground;	// To be replaced by a world class
 };
 
 #endif	// _PLAYER_
