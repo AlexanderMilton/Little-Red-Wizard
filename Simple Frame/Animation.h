@@ -1,10 +1,12 @@
 #ifndef _ANIMATION_
 #define _ANIMATION_
 
+#include <string>
+#include <memory>
+
 #include "SFML\System\Clock.hpp"
 #include "SFML\Graphics\Texture.hpp"
 #include "SFML\Graphics\Sprite.hpp"
-#include <string>
 
 /* ---------------- Animation ----------------
 * The Animation is an object used to animate
@@ -24,15 +26,15 @@ public:
 
 	void update();
 	void setPosition(const sf::Vector2f& position);
-	const sf::Sprite& getSprite() const;
+	const std::shared_ptr<sf::Sprite> getSprite() const;
 
 private:
-	sf::Clock mFrameTimer;			// Used to time how long a frame is visible
-	sf::Texture mTexture;			// The texture to be used in the animation
-	sf::Sprite mSprite;				// THe sprite  to be used in the animation
-	int mTimePerFrame;				// How many frames during which the sprite is visible
-	int mNumberOfFrames;			// How many frames the spritesheet contains
-	int mCurrentFrame;				// The frame which is currently active
+	sf::Clock mFrameTimer;					// Used to time how long a frame is visible
+	std::shared_ptr<sf::Texture> mTexture;	// The texture to be used in the animation
+	std::shared_ptr<sf::Sprite> mSprite;	// The sprite  to be used in the animation
+	int mTimePerFrame;						// How many frames during which the sprite is visible
+	int mNumberOfFrames;					// How many frames the spritesheet contains
+	int mCurrentFrame;						// The frame which is currently active
 };
 
 #endif	// _ANIMATION_

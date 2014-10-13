@@ -5,7 +5,7 @@ static const unsigned int WINDOW_HEIGHT = 512;
 
 
 GameEngine::GameEngine() :
-	mBackgroundImage(ResourceManager::getTexture("image.jpg")),
+	//mBackgroundImage(ResourceManager::getTexture("image.jpg")),
 	imageSize(mBackgroundImage.getLocalBounds()),
 	input(0),
 	mPlayer()

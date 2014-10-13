@@ -4,9 +4,9 @@
 
 #include <cassert>
 
-std::map <std::string, sf::Music*> SoundEngine::mMusic;
-std::map <std::string, sf::Sound*> SoundEngine::mSoundEffects;
-sf::Music* SoundEngine::currentSong = nullptr;
+std::map <std::string, std::shared_ptr<sf::Music>> SoundEngine::mMusic;
+std::map <std::string, std::shared_ptr<sf::Sound>> SoundEngine::mSoundEffects;
+std::shared_ptr<sf::Music> SoundEngine::currentSong = nullptr;
 
 float SoundEngine::mMusicVolume = 100.0f;
 float SoundEngine::mSoundVolume = 100.0f;
@@ -14,11 +14,14 @@ float SoundEngine::mSoundVolume = 100.0f;
 // No loose ends - delete and deallocaate the stored sounds (music is destroyed by resource manager)
 void SoundEngine::destroy()
 {
+
+	/*
+	Obsolete with smart pointers
 	for (auto i = mSoundEffects.begin(); i != mSoundEffects.end(); )
 	{
 		delete i->second;
 		i = mSoundEffects.erase(i);
-	}
+	}*/
 }
 
 
@@ -48,8 +51,8 @@ void SoundEngine::stopAll()
 void SoundEngine::fetchSoundEffect(std::string fileName)
 {
 		dbgo::println("SoundEngine.cpp: Fetching Sound Effect (" + fileName + ") from Resource Manager");
-		sf::Sound* fetchedSound = new sf::Sound(ResourceManager::getSoundBuffer(fileName));
-		mSoundEffects[fileName] = fetchedSound;
+		//sf::Sound* fetchedSound = new sf::Sound(ResourceManager::getSoundBuffer(fileName));
+		mSoundEffects[fileName] = std::make_unique<sf::Sound>(*ResourceManager::getSoundBuffer(fileName));
 }
 
 // Play sound effect. Use the full file name of the sound effect as parameter.
@@ -84,8 +87,7 @@ void SoundEngine::fetchMusic(std::string fileName)
 {
 	dbgo::println("File not loaded. Fetching Music (" + fileName + ") from Resource Manager");
 
-	sf::Music* fetchedMusic = &(ResourceManager::getMusic(fileName));
-	mMusic[fileName] = fetchedMusic;
+	mMusic[fileName] = std::move(ResourceManager::getMusic(fileName));
 	mMusic[fileName]->setVolume(mMusicVolume);
 
 	assert(mMusic.find(fileName)->second != nullptr);
@@ -276,7 +278,7 @@ void SoundEngine::stopSoundEffect(std::string fileName)
 void SoundEngine::deleteSoundEffect(std::string fileName)
 {
 	assert(mSoundEffects.find(fileName)->second != nullptr);
-	delete mSoundEffects[fileName];
+	mSoundEffects[fileName].reset();
 	mSoundEffects.erase(fileName);
 }
 
@@ -305,6 +307,6 @@ void SoundEngine::deleteMusic(std::string fileName)
 	dbgo::println("Deleting Music: " + fileName);
 	
 	assert(mMusic.find(fileName)->second != nullptr);
-	delete mMusic[fileName];
+	mMusic[fileName].reset();
 	mMusic.erase(fileName);
 }

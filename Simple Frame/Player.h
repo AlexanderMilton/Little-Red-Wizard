@@ -1,13 +1,13 @@
 #ifndef _PLAYER_
 #define _PLAYER_
 
-#include "SFML\Graphics\RenderWindow.hpp"
-#include "SFML\System\Vector2.hpp"
+#include <memory>
 
 #include "Animation.h"
 #include "Projectile.h"
 
-#include <memory>
+#include "SFML\Graphics\RenderWindow.hpp"
+#include "SFML\System\Vector2.hpp"
 
 class Player
 {
@@ -17,9 +17,9 @@ public:
 
 	void update(int input);
 	void draw(std::shared_ptr <sf::RenderWindow> window);
-	const sf::Sprite& getSprite() const;
+	const std::shared_ptr<sf::Sprite> getSprite() const;
 	const sf::Vector2f& getPosition() const;
-	sf::FloatRect getBoundingBox();
+	sf::FloatRect& getBoundingBox();
 
 private:
 	std::unique_ptr <Animation>  walkLeft;

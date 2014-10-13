@@ -14,11 +14,11 @@ const std::string
 	ResourceManager::CONFIG_XML_PATH	= "./resources/xml/config/";
 
 
-std::map <std::string, std::unique_ptr <sf::Texture>> mTextures;
-std::map <std::string, std::unique_ptr <sf::SoundBuffer>> mSoundBuffers;
-std::map <std::string, std::unique_ptr <sf::Music>> mMusics;
-std::map <std::string, std::unique_ptr <tinyxml2::XMLDocument>> mXML;
-std::map <std::string, std::unique_ptr <sf::Font>> mFonts;
+std::map <std::string, std::shared_ptr <sf::Texture>> ResourceManager::mTextures;
+std::map <std::string, std::shared_ptr <sf::SoundBuffer>> ResourceManager::mSoundBuffers;
+std::map <std::string, std::shared_ptr <sf::Music>> ResourceManager::mMusics;
+std::map <std::string, std::shared_ptr <tinyxml2::XMLDocument>> ResourceManager::mXML;
+std::map <std::string, std::shared_ptr <sf::Font>> ResourceManager::mFonts;
 
 
 ResourceManager::ResourceManager()
@@ -61,11 +61,12 @@ void ResourceManager::destroy()
 }
 
 // Fetch a sprite by getting the respective image filename
-const sf::Texture& ResourceManager::getTexture(std::string fileName)
+const std::shared_ptr<sf::Texture> ResourceManager::getTexture(std::string fileName)
 {
+	auto newTexture = std::make_shared<sf::Texture>(sf::Texture());
+
 	if(mTextures.find(fileName) == mTextures.end())
 	{
-		auto newTexture = std::unique_ptr<sf::Texture>(new sf::Texture());
 		if(fileName == "")
 		{
 			newTexture->create(0,0);			
@@ -78,15 +79,16 @@ const sf::Texture& ResourceManager::getTexture(std::string fileName)
 		mTextures[fileName] = std::move(newTexture);
 	}
 
-	return *mTextures[fileName];
+	return newTexture;
 }
 
 // Fetch a sound by calling the respective sound filename
-const sf::SoundBuffer& ResourceManager::getSoundBuffer(std::string fileName)
+const std::shared_ptr<sf::SoundBuffer> ResourceManager::getSoundBuffer(std::string fileName)
 {
+	auto newSoundBuffer = std::shared_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
+
 	if(mSoundBuffers.find(fileName) == mSoundBuffers.end())
 	{
-		auto newSoundBuffer = std::unique_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
 		if(fileName != "")
 		{
 			newSoundBuffer->loadFromFile(SOUND_PATH + fileName);
@@ -98,22 +100,36 @@ const sf::SoundBuffer& ResourceManager::getSoundBuffer(std::string fileName)
 		mSoundBuffers[fileName] = std::move(newSoundBuffer);
 	}
 
-	return *mSoundBuffers[fileName];
+	return newSoundBuffer;
 }
 
 // May require update/fix
 // Fetch music by calling the respective music filename
-sf::Music& ResourceManager::getMusic(std::string fileName)
+std::shared_ptr<sf::Music> ResourceManager::getMusic(std::string fileName)
 {
+	auto newMusic = std::shared_ptr<sf::Music>(new sf::Music());
+
 	if(mMusics.find(fileName) == mMusics.end())
 	{
-		auto newMusic = std::unique_ptr<sf::Music>(new sf::Music());
 		bool success = newMusic->openFromFile(MUSIC_PATH + fileName);
 		assert(success);
 		mMusics[fileName] = std::move(newMusic);
 	}
 
-	return *mMusics[fileName];
+	return newMusic;
+}
+
+const std::shared_ptr<sf::Font> ResourceManager::getFont(std::string fileName)
+{
+	auto newFont = std::shared_ptr<sf::Font>(new sf::Font());
+
+	if (mFonts.find(fileName) == mFonts.end())
+	{
+		newFont->loadFromFile(FONT_PATH + fileName);
+		mFonts[fileName] = std::move(newFont);
+	}
+
+	return newFont;
 }
 
 const tinyxml2::XMLDocument& ResourceManager::getLevelXML(std::string fileName)
@@ -137,23 +153,11 @@ const tinyxml2::XMLDocument& ResourceManager::getConfigXML(std::string fileName)
 	return getXML(CONFIG_XML_PATH, fileName);
 }
 
-const sf::Font& ResourceManager::getFont(std::string fileName)
-{
-	if(mFonts.find(fileName) == mFonts.end())
-	{
-		auto newFont = std::unique_ptr<sf::Font>(new sf::Font());
-		newFont->loadFromFile(FONT_PATH + fileName);
-		mFonts[fileName] = std::move(newFont);
-	}
-
-	return *mFonts[fileName];
-}
-
 const tinyxml2::XMLDocument& ResourceManager::getXML(std::string path, std::string fileName)
 {
 	if(mXML.find(fileName) == mXML.end())
 	{
-		auto newXML = std::unique_ptr<tinyxml2::XMLDocument>(new tinyxml2::XMLDocument());
+		auto newXML = std::shared_ptr<tinyxml2::XMLDocument>(new tinyxml2::XMLDocument());
 		const std::string filepath = path + fileName + ".xml";
 		tinyxml2::XMLError retVal = newXML->LoadFile(filepath.c_str());
 		if(retVal != tinyxml2::XML_NO_ERROR)

@@ -2,6 +2,8 @@
 #define _SOUND_ENGINE_
 
 #include <map>
+#include <memory>
+
 #include "SFML\Audio.hpp"
 
 class SoundEngine
@@ -49,9 +51,9 @@ private:
 	static void deleteMusic(std::string fileName);
 
 
-	static std::map <std::string, sf::Music*> mMusic;
-	static std::map <std::string, sf::Sound*> mSoundEffects;
-	static sf::Music* currentSong;
+	static std::map <std::string, std::shared_ptr<sf::Music>> mMusic;
+	static std::map <std::string, std::shared_ptr<sf::Sound>> mSoundEffects;
+	static std::shared_ptr<sf::Music> currentSong;
 
 	static float mMusicVolume;
 	static float mSoundVolume;

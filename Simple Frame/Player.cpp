@@ -17,10 +17,12 @@ Player::Player() :
 	mIsDoubleJumping(true),
 	mFacingLeft(false),
 	mPosition(startingPosition),
-	walkLeft(new Animation("left.png", 140, 2)),
-	walkRight(new Animation("right.png", 140, 2)),
-	idleLeft(new Animation("left_idle.png", 100, 1)),
-	idleRight(new Animation("right_idle.png", 100, 1)),
+	
+	// Error here, yo
+	walkLeft(std::make_unique<Animation>("left.png", 140, 2)),
+	walkRight(std::make_unique<Animation>("right.png", 140, 2)),
+	idleLeft(std::make_unique<Animation>("left_idle.png", 100, 1)),
+	idleRight(std::make_unique<Animation>("right_idle.png", 100, 1)),
 	currentAnimation(std::move(idleRight)),
 	ground(0, 500, 720, 10)
 {
@@ -149,12 +151,12 @@ void Player::update(int input)
 	currentAnimation->setPosition(mPosition);
 }
 
-void Player::draw(std::shared_ptr <sf::RenderWindow> window)
+void Player::draw(std::shared_ptr<sf::RenderWindow> window)
 {
-	window->draw(getSprite());
+	window->draw(*getSprite());
 }
 
-const sf::Sprite& Player::getSprite() const
+const std::shared_ptr<sf::Sprite> Player::getSprite() const
 {
 	return currentAnimation->getSprite();
 }
@@ -164,8 +166,7 @@ const sf::Vector2f& Player::getPosition() const
 	return mPosition;
 }
 
-sf::FloatRect Player::getBoundingBox()
+sf::FloatRect& Player::getBoundingBox()
 {
-	sf::Sprite sprite = currentAnimation->getSprite();
-	return sprite.getGlobalBounds();
+	return currentAnimation->getSprite()->getGlobalBounds();
 }
