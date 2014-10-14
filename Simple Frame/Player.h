@@ -17,16 +17,16 @@ public:
 
 	void update(int input);
 	void draw(std::shared_ptr <sf::RenderWindow> window);
-	const std::shared_ptr<sf::Sprite> getSprite() const;
+	const sf::Sprite& getSprite() const;
 	const sf::Vector2f& getPosition() const;
 	sf::FloatRect& getBoundingBox();
 
 private:
-	std::unique_ptr <Animation>  walkLeft;
-	std::unique_ptr <Animation>  idleLeft;
-	std::unique_ptr <Animation>  walkRight;
-	std::unique_ptr <Animation>  idleRight;
-	std::unique_ptr <Animation> currentAnimation;
+	std::shared_ptr <Animation>  walkLeft;
+	std::shared_ptr <Animation>  idleLeft;
+	std::shared_ptr <Animation>  walkRight;
+	std::shared_ptr <Animation>  idleRight;
+	std::shared_ptr <Animation> currentAnimation;
 	
 	sf::FloatRect mPlayerBoundingBox;
 	sf::Vector2f mPosition;

@@ -26,12 +26,12 @@ public:
 
 	void update();
 	void setPosition(const sf::Vector2f& position);
-	const std::shared_ptr<sf::Sprite> getSprite() const;
+	const sf::Sprite& getSprite() const;
 
 private:
 	sf::Clock mFrameTimer;					// Used to time how long a frame is visible
-	std::shared_ptr<sf::Texture> mTexture;	// The texture to be used in the animation
-	std::shared_ptr<sf::Sprite> mSprite;	// The sprite  to be used in the animation
+	sf::Texture mTexture;					// The texture to be used in the animation
+	sf::Sprite mSprite;						// The sprite  to be used in the animation
 	int mTimePerFrame;						// How many frames during which the sprite is visible
 	int mNumberOfFrames;					// How many frames the spritesheet contains
 	int mCurrentFrame;						// The frame which is currently active

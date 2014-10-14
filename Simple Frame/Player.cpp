@@ -19,11 +19,11 @@ Player::Player() :
 	mPosition(startingPosition),
 	
 	// Error here, yo
-	walkLeft(std::make_unique<Animation>("left.png", 140, 2)),
-	walkRight(std::make_unique<Animation>("right.png", 140, 2)),
-	idleLeft(std::make_unique<Animation>("left_idle.png", 100, 1)),
-	idleRight(std::make_unique<Animation>("right_idle.png", 100, 1)),
-	currentAnimation(std::move(idleRight)),
+	walkLeft	(std::make_shared<Animation>("left.png", 140, 2)),
+	walkRight	(std::make_shared<Animation>("right.png", 140, 2)),
+	idleLeft	(std::make_shared<Animation>("left_idle.png", 100, 1)),
+	idleRight	(std::make_shared<Animation>("right_idle.png", 100, 1)),
+	currentAnimation(idleRight),
 	ground(0, 500, 720, 10)
 {
 	mReloadTimer.restart();
@@ -85,7 +85,7 @@ void Player::update(int input)
 	if (input & InputHandler::Input::LEFT)
 	{
 		mVelocity.x = -walkSpeed;
-		currentAnimation = std::move(walkLeft);
+		currentAnimation = walkLeft;
 		mFacingLeft = true;
 	}
 
@@ -93,7 +93,7 @@ void Player::update(int input)
 	else if (input & InputHandler::Input::RIGHT)
 	{
 		mVelocity.x = walkSpeed;
-		currentAnimation = std::move(walkRight);
+		currentAnimation = walkRight;
 		mFacingLeft = false;
 	}
 
@@ -101,11 +101,11 @@ void Player::update(int input)
 	else
 	{
 		if (mVelocity.x > 0.1f){
-			currentAnimation = std::move(idleRight);
+			currentAnimation = idleRight;
 		}
 
 		if (mVelocity.x < -0.1f){
-			currentAnimation = std::move(idleLeft);
+			currentAnimation = idleLeft;
 		}
 
 		mVelocity.x = 0;
@@ -153,10 +153,10 @@ void Player::update(int input)
 
 void Player::draw(std::shared_ptr<sf::RenderWindow> window)
 {
-	window->draw(*getSprite());
+	window->draw(getSprite());
 }
 
-const std::shared_ptr<sf::Sprite> Player::getSprite() const
+const sf::Sprite& Player::getSprite() const
 {
 	return currentAnimation->getSprite();
 }
@@ -168,5 +168,5 @@ const sf::Vector2f& Player::getPosition() const
 
 sf::FloatRect& Player::getBoundingBox()
 {
-	return currentAnimation->getSprite()->getGlobalBounds();
+	return currentAnimation->getSprite().getGlobalBounds();
 }

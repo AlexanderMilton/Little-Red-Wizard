@@ -63,7 +63,7 @@ void ResourceManager::destroy()
 // Fetch a sprite by getting the respective image filename
 const std::shared_ptr<sf::Texture> ResourceManager::getTexture(std::string fileName)
 {
-	auto newTexture = std::make_shared<sf::Texture>(sf::Texture());
+	std::shared_ptr<sf::Texture> newTexture = std::make_shared<sf::Texture>(sf::Texture());
 
 	if(mTextures.find(fileName) == mTextures.end())
 	{
@@ -76,7 +76,7 @@ const std::shared_ptr<sf::Texture> ResourceManager::getTexture(std::string fileN
 		{
 			newTexture->loadFromFile(GRAPHICS_PATH + fileName);
 		}
-		mTextures[fileName] = std::move(newTexture);
+		mTextures[fileName] = newTexture;
 	}
 
 	return newTexture;
@@ -85,7 +85,7 @@ const std::shared_ptr<sf::Texture> ResourceManager::getTexture(std::string fileN
 // Fetch a sound by calling the respective sound filename
 const std::shared_ptr<sf::SoundBuffer> ResourceManager::getSoundBuffer(std::string fileName)
 {
-	auto newSoundBuffer = std::shared_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
+	std::shared_ptr<sf::SoundBuffer> newSoundBuffer = std::shared_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
 
 	if(mSoundBuffers.find(fileName) == mSoundBuffers.end())
 	{
@@ -107,7 +107,7 @@ const std::shared_ptr<sf::SoundBuffer> ResourceManager::getSoundBuffer(std::stri
 // Fetch music by calling the respective music filename
 std::shared_ptr<sf::Music> ResourceManager::getMusic(std::string fileName)
 {
-	auto newMusic = std::shared_ptr<sf::Music>(new sf::Music());
+	std::shared_ptr<sf::Music> newMusic = std::shared_ptr<sf::Music>(new sf::Music());
 
 	if(mMusics.find(fileName) == mMusics.end())
 	{
@@ -121,7 +121,7 @@ std::shared_ptr<sf::Music> ResourceManager::getMusic(std::string fileName)
 
 const std::shared_ptr<sf::Font> ResourceManager::getFont(std::string fileName)
 {
-	auto newFont = std::shared_ptr<sf::Font>(new sf::Font());
+	std::shared_ptr<sf::Font> newFont = std::shared_ptr<sf::Font>(new sf::Font());
 
 	if (mFonts.find(fileName) == mFonts.end())
 	{
