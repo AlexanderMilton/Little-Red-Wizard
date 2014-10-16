@@ -27,7 +27,7 @@ GameEngine::~GameEngine()
 int GameEngine::run()
 {
 	
-		// ---------- MAIN LOOP ---------- //
+		// -------------------- MAIN LOOP -------------------- //
 
 
 
@@ -37,7 +37,8 @@ int GameEngine::run()
 		while (window->pollEvent(event)){}
 
 
-		// ----- UPDATE ----- //
+
+		// ---------- UPDATE ---------- //
 
 		// Check for termination, exit loop if true
 		if (event.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
@@ -53,7 +54,7 @@ int GameEngine::run()
 
 
 
-		// ----- RENDER ----- //
+		// ---------- RENDER ---------- //
 
 		// Clear window
 		window->clear();

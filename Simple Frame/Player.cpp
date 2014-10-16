@@ -18,7 +18,6 @@ Player::Player() :
 	mFacingLeft(false),
 	mPosition(startingPosition),
 	
-	// Error here, yo
 	walkLeft	(std::make_shared<Animation>("left.png", 140, 2)),
 	walkRight	(std::make_shared<Animation>("right.png", 140, 2)),
 	idleLeft	(std::make_shared<Animation>("left_idle.png", 100, 1)),

@@ -26,6 +26,7 @@ private:
 	sf::Sprite mBackgroundImage;
 	int input;
 	InputHandler mInputHandler;
+	EntityManager mEntityManager;
 	Player mPlayer;
 };
 

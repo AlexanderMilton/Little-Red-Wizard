@@ -7,15 +7,21 @@
 #include <vector>
 #include <memory>
 
+/*
+* Handles the creation and destruction of loose entities such as projectiles and enemies.
+* Detects and handles collision between entities and the player.
+*/
+
 class EntityManager
 {
 public:
 	EntityManager();
 	~EntityManager();
-	static void destroy();
-	static void fireProjectile(sf::Vector2f position);
+	void destroy();
+	void fireProjectile(sf::Vector2f position);
 
 private:
+
 };
 
 #endif	// _ENTITY_MANAGER_
