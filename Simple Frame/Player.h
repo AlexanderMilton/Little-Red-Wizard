@@ -5,6 +5,7 @@
 
 #include "Animation.h"
 #include "Projectile.h"
+#include "EntityManager.h"
 
 #include "SFML\Graphics\RenderWindow.hpp"
 #include "SFML\System\Vector2.hpp"
@@ -15,8 +16,13 @@ public:
 	Player();
 	~Player();
 
-	void update(int input);
+	void update(int& input, EntityManager& entityManager);
 	void draw(std::shared_ptr <sf::RenderWindow> window);
+	
+	void handleSpells(int& input, EntityManager& entityManager);
+	void handleWalk(int& input);
+	void handleJump(int& input);
+	
 	const sf::Sprite& getSprite() const;
 	const sf::Vector2f& getPosition() const;
 	sf::FloatRect& getBoundingBox();

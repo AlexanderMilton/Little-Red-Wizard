@@ -2,6 +2,7 @@
 #include <cassert>
 #include "DebugOut.h"
 
+#include <iostream>
 
 const std::string 
 	ResourceManager::GRAPHICS_PATH		= "./resources/graphics/",

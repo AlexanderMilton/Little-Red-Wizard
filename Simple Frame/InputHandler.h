@@ -10,7 +10,7 @@ public:
 	InputHandler();
 	~InputHandler();
 
-	int update();
+	int& update();
 	int updateGlobal(int input);
 	int updatePlayer(int input);
 	bool isSpacePressed;

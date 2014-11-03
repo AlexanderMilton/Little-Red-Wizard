@@ -2,12 +2,11 @@
 #include "InputHandler.h"
 #include "ResourceManager.h"
 #include "DebugOut.h"
-#include "EntityManager.h"
 
-const float walkSpeed = 1.8f;
-const float jumpSpeed = -6.0f;
-static const float gravity = 0.15f;
-static const float terminalVelocity = 4.0f;
+const float walkSpeed = 6.8f;
+const float jumpSpeed = -12.0f;
+static const float gravity = 0.85f;
+static const float terminalVelocity = 8.0f;
 static const float reloadSpeed = 100.0f;
 static const sf::Vector2f startingPosition = sf::Vector2f(50.0, 50.0);
 
@@ -32,83 +31,14 @@ Player::~Player()
 {
 }
 
-void Player::update(int input)
+void Player::update(int& input, EntityManager& entityManager)
 {
-	// Casting spells
-	if (input & InputHandler::Input::M_LEFT)
-	{
+	
+	handleSpells(input, entityManager);
 
-		if (mReloadTimer.getElapsedTime().asMilliseconds() > reloadSpeed)
-		{
-			mIsReloading = false;
-		}
+	handleJump(input);
 
-		else
-		{
-			mIsReloading = true;
-		}
-
-		// We need a delay in the firing ability, 
-		if (mIsReloading == false)
-		{
-			// Check facing direction to determine the spawn origin of the projectile
-			if (mFacingLeft == true)
-			{
-				EntityManager::fireProjectile(sf::Vector2f(mPosition.x, mPosition.y - (getBoundingBox().height / 2)));
-				mReloadTimer.restart();
-			}
-
-			if (mFacingLeft == false)
-			{
-				EntityManager::fireProjectile(sf::Vector2f(mPosition.x + (getBoundingBox().width), mPosition.y - (getBoundingBox().height / 2)));
-				mReloadTimer.restart();
-			}
-		}
-	}
-
-	// Double Jumping
-	if ((input & InputHandler::Input::SPACE) && (mIsJumping == true) && (mIsDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
-	{
-		mVelocity.y = jumpSpeed;
-		mIsDoubleJumping = true;
-	}
-
-	// Jumping
-	if ((input & InputHandler::Input::SPACE) && (mIsJumping == false) && (mIsDoubleJumping == false))
-	{
-		mVelocity.y = jumpSpeed;
-		mIsJumping = true;
-	}
-
-	// Walk left
-	if (input & InputHandler::Input::LEFT)
-	{
-		mVelocity.x = -walkSpeed;
-		currentAnimation = walkLeft;
-		mFacingLeft = true;
-	}
-
-	// Walk right
-	else if (input & InputHandler::Input::RIGHT)
-	{
-		mVelocity.x = walkSpeed;
-		currentAnimation = walkRight;
-		mFacingLeft = false;
-	}
-
-	// Idle
-	else
-	{
-		if (mVelocity.x > 0.1f){
-			currentAnimation = idleRight;
-		}
-
-		if (mVelocity.x < -0.1f){
-			currentAnimation = idleLeft;
-		}
-
-		mVelocity.x = 0;
-	}
+	handleWalk(input);
 
 
 
@@ -153,6 +83,91 @@ void Player::update(int input)
 void Player::draw(std::shared_ptr<sf::RenderWindow> window)
 {
 	window->draw(getSprite());
+}
+
+void Player::handleSpells(int& input, EntityManager& entityManager)
+{
+	// Casting spells
+	if (input & InputHandler::Input::M_LEFT)
+	{
+
+		if (mReloadTimer.getElapsedTime().asMilliseconds() > reloadSpeed)
+		{
+			mIsReloading = false;
+		}
+
+		else
+		{
+			mIsReloading = true;
+		}
+
+		// We need a delay in the firing ability, 
+		if (mIsReloading == false)
+		{
+			// Check facing direction to determine the spawn origin of the projectile
+			if (mFacingLeft == true)
+			{
+				entityManager.fireProjectile(sf::Vector2f(mPosition.x, mPosition.y - (getBoundingBox().height / 2)));
+				mReloadTimer.restart();
+			}
+
+			if (mFacingLeft == false)
+			{
+				entityManager.fireProjectile(sf::Vector2f(mPosition.x + (getBoundingBox().width), mPosition.y - (getBoundingBox().height / 2)));
+				mReloadTimer.restart();
+			}
+		}
+	}
+}
+
+void Player::handleJump(int& input)
+{
+	// Double Jumping
+	if ((input & InputHandler::Input::SPACE) && (mIsJumping == true) && (mIsDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
+	{
+		mVelocity.y = jumpSpeed;
+		mIsDoubleJumping = true;
+	}
+
+	// Jumping
+	if ((input & InputHandler::Input::SPACE) && (mIsJumping == false) && (mIsDoubleJumping == false))
+	{
+		mVelocity.y = jumpSpeed;
+		mIsJumping = true;
+	}
+}
+
+void Player::handleWalk(int& input)
+{
+	// Walk left
+	if (input & InputHandler::Input::LEFT)
+	{
+		mVelocity.x = -walkSpeed;
+		currentAnimation = walkLeft;
+		mFacingLeft = true;
+	}
+
+	// Walk right
+	else if (input & InputHandler::Input::RIGHT)
+	{
+		mVelocity.x = walkSpeed;
+		currentAnimation = walkRight;
+		mFacingLeft = false;
+	}
+
+	// Idle
+	else
+	{
+		if (mVelocity.x > 0.1f){
+			currentAnimation = idleRight;
+		}
+
+		if (mVelocity.x < -0.1f){
+			currentAnimation = idleLeft;
+		}
+
+		mVelocity.x = 0;
+	}
 }
 
 const sf::Sprite& Player::getSprite() const

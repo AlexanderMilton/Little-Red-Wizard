@@ -29,8 +29,6 @@ int GameEngine::run()
 	
 		// -------------------- MAIN LOOP -------------------- //
 
-
-
 	while (window->isOpen())
 	{
 		sf::Event event;
@@ -50,7 +48,7 @@ int GameEngine::run()
 		input = mInputHandler.update();
 
 		// Update player
-		mPlayer.update(input);
+		mPlayer.update(input, mEntityManager);
 
 
 

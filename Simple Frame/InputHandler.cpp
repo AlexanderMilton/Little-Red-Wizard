@@ -16,7 +16,7 @@ InputHandler::~InputHandler()
 }
 
 // Check and handle keyboard input
-int InputHandler::update()
+int& InputHandler::update()
 {
 	// Reset input
 	int input = InputHandler::Input::NONE;
