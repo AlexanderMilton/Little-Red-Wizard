@@ -15,7 +15,7 @@ GameEngine::GameEngine() :
 	// Create a window
 	//sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "<generic window name>");
 	window = std::shared_ptr<sf::RenderWindow>(new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "<generic window name>"));
-	window->setFramerateLimit(144);
+	window->setFramerateLimit(60);
 	window->setVerticalSyncEnabled(true);
 }
 

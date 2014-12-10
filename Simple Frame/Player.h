@@ -42,6 +42,7 @@ private:
 	bool mFacingLeft;
 	bool mIsReloading;
 	sf::Clock mReloadTimer;
+	sf::Clock mJumpTimer;
 
 	sf::FloatRect ground;	// To be replaced by a world class
 };

@@ -3,11 +3,12 @@
 #include "ResourceManager.h"
 #include "DebugOut.h"
 
-const float walkSpeed = 6.8f;
-const float jumpSpeed = -12.0f;
-static const float gravity = 0.85f;
-static const float terminalVelocity = 8.0f;
-static const float reloadSpeed = 100.0f;
+const float walkSpeed= 9.9f;					// In 10 "Meters" per second
+const float jumpSpeed = -1.2f;					// In 10 "Meters" per second
+static const float gravity = 0.98f;				// In 10 "Meters" per second per second
+static const float terminalVelocity = 5.55f;	// In 10 "Meters" per second
+static const float reloadTime = 100.0f;			// Milliseconds
+static const float jumpRechargeTime = 10.0f;	// Milliseconds
 static const sf::Vector2f startingPosition = sf::Vector2f(50.0, 50.0);
 
 
@@ -25,6 +26,7 @@ Player::Player() :
 	ground(0, 500, 720, 10)
 {
 	mReloadTimer.restart();
+	mJumpTimer.restart();
 }
 
 Player::~Player()
@@ -39,7 +41,6 @@ void Player::update(int& input, EntityManager& entityManager)
 	handleJump(input);
 
 	handleWalk(input);
-
 
 
 	// Gravity & Terminal velocity
@@ -91,7 +92,7 @@ void Player::handleSpells(int& input, EntityManager& entityManager)
 	if (input & InputHandler::Input::M_LEFT)
 	{
 
-		if (mReloadTimer.getElapsedTime().asMilliseconds() > reloadSpeed)
+		if (mReloadTimer.getElapsedTime().asMilliseconds() > reloadTime)
 		{
 			mIsReloading = false;
 		}
@@ -110,7 +111,6 @@ void Player::handleSpells(int& input, EntityManager& entityManager)
 				entityManager.fireProjectile(sf::Vector2f(mPosition.x, mPosition.y - (getBoundingBox().height / 2)));
 				mReloadTimer.restart();
 			}
-
 			if (mFacingLeft == false)
 			{
 				entityManager.fireProjectile(sf::Vector2f(mPosition.x + (getBoundingBox().width), mPosition.y - (getBoundingBox().height / 2)));
@@ -122,8 +122,40 @@ void Player::handleSpells(int& input, EntityManager& entityManager)
 
 void Player::handleJump(int& input)
 {
+	if (input & InputHandler::Input::SPACE)
+	{
+		if (!mIsJumping)
+		{
+			mVelocity.y = jumpSpeed;
+			mIsJumping = true;
+		}
+
+		else if (mIsJumping && !mIsDoubleJumping && mJumpTimer.getElapsedTime().asMilliseconds() > jumpRechargeTime)
+		{
+			mVelocity.y = jumpSpeed;
+			mIsDoubleJumping = true;
+		}
+	}
+
+
+	/*
+	if (!mIsJumping)
+	{
+	mVelocity.y = -jumpSpeed;
+	mIsJumping = true;
+	}
+
+	else if (mIsJumping && mJumpTimer.getElapsedTime().asMilliseconds() > jumpRechargeTime)
+	{
+	mVelocity.y = -jumpSpeed;
+	mIsDoubleJumping = true;
+	}*/
+
+
+	/*
+
 	// Double Jumping
-	if ((input & InputHandler::Input::SPACE) && (mIsJumping == true) && (mIsDoubleJumping == false) && (mVelocity.y < (-jumpSpeed / 1.2)))
+	if ((input & InputHandler::Input::SPACE) && (mIsJumping == true) && (mIsDoubleJumping == false) && (mJumpTimer.getElapsedTime().asMilliseconds() > jumpRechargeTime))
 	{
 		mVelocity.y = jumpSpeed;
 		mIsDoubleJumping = true;
@@ -134,7 +166,11 @@ void Player::handleJump(int& input)
 	{
 		mVelocity.y = jumpSpeed;
 		mIsJumping = true;
+		mJumpTimer.restart();
 	}
+
+	*/
+
 }
 
 void Player::handleWalk(int& input)
