@@ -17,6 +17,7 @@ GameEngine::GameEngine() :
 	window = std::shared_ptr<sf::RenderWindow>(new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "<generic window name>"));
 	window->setFramerateLimit(60);
 	window->setVerticalSyncEnabled(true);
+	//window->setKeyRepeatEnabled(false);
 }
 
 
@@ -32,39 +33,37 @@ int GameEngine::run()
 	while (window->isOpen())
 	{
 		sf::Event event;
-		while (window->pollEvent(event)){}
+
+		while (window->pollEvent(event)){
+
+			// ---------- UPDATE ---------- //
+
+			// Check for termination, exit loop if true
+			if (event.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
+				window->close();
+
+			// Check for input
+			input = mInputHandler.update();
+
+			// Update player
+			mPlayer.update(input, mEntityManager);
 
 
 
-		// ---------- UPDATE ---------- //
+			// ---------- RENDER ---------- //
 
-		// Check for termination, exit loop if true
-		if (event.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
-		{
-			window->close();
+			// Clear window
+			window->clear();
+
+			// Draw background
+			window->draw(mBackgroundImage);
+
+			// Draw player
+			mPlayer.draw(window);
+
+			// Display window
+			window->display();
 		}
-
-		// Check for input
-		input = mInputHandler.update();
-
-		// Update player
-		mPlayer.update(input, mEntityManager);
-
-
-
-		// ---------- RENDER ---------- //
-
-		// Clear window
-		window->clear();
-
-		// Draw background
-		window->draw(mBackgroundImage);
-
-		// Draw player
-		mPlayer.draw(window);
-
-		// Display window
-		window->display();
 	}
 
 	return 0;

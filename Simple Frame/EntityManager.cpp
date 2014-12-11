@@ -25,8 +25,6 @@ void EntityManager::fireProjectile(sf::Vector2f position)
 
 	//auto newProjectile = std::unique_ptr<Entity>(new Projectile(sf::Vector2f(position)));
 
-	std::vector <std::unique_ptr<Entity>> mEntityVector;
-
 	std::unique_ptr<Entity> newProjectile = std::unique_ptr<Entity>(new Projectile(sf::Vector2f(position)));
 	
 	mEntityVector.push_back(std::move(newProjectile));

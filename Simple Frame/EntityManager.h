@@ -21,6 +21,7 @@ public:
 	void fireProjectile(sf::Vector2f position);
 
 private:
+	std::vector <std::unique_ptr<Entity>> mEntityVector;
 
 };
 

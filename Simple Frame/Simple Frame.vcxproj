@@ -82,6 +82,7 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SoundEngine.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

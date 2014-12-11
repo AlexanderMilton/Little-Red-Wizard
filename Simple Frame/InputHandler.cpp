@@ -2,11 +2,9 @@
 #include "DebugOut.h"
 
 #include "SFML\Window\Keyboard.hpp"
-#include "SFML\Window\Event.hpp"
 
 
-InputHandler::InputHandler() :
-	isSpacePressed(false)
+InputHandler::InputHandler()
 {
 }
 
@@ -46,19 +44,10 @@ int& InputHandler::update()
 		dbgout += "ESCAPE ";
 	}
 	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Space))
 	{
-		if (isSpacePressed == false)
-		{
-			input += InputHandler::Input::SPACE;
-			isSpacePressed = true;
-		}
+		input += InputHandler::Input::SPACE;
 		dbgout += "SPACE ";
-	}
-
-	else
-	{
-		isSpacePressed = false;
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
