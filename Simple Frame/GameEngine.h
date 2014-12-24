@@ -18,16 +18,21 @@ class GameEngine
 public:
 	GameEngine();
 	~GameEngine();
+	void receiveInput();
 	int run();
 
 private:
 	std::shared_ptr <sf::RenderWindow> window;
 	sf::FloatRect imageSize;
 	sf::Sprite mBackgroundImage;
+	sf::Event mEvent;
+	bool inFocus;
 	int input;
-	InputHandler mInputHandler;
+	//InputHandler mInputHandler;
 	EntityManager mEntityManager;
 	Player mPlayer;
+
+	sf::View view;	// Fulkod
 };
 
 #endif	// _GAME_ENGINE_

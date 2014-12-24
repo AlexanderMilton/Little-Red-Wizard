@@ -17,7 +17,6 @@ GameEngine::GameEngine() :
 	window = std::shared_ptr<sf::RenderWindow>(new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "<generic window name>"));
 	window->setFramerateLimit(60);
 	window->setVerticalSyncEnabled(true);
-	//window->setKeyRepeatEnabled(false);
 }
 
 
@@ -32,23 +31,50 @@ int GameEngine::run()
 
 	while (window->isOpen())
 	{
-		sf::Event event;
 
-		while (window->pollEvent(event)){
+		while (window->pollEvent(mEvent))
+		{
+
+			switch (mEvent.type)
+			{
+			case sf::Event::KeyPressed:
+				input = InputHandler::getGameInput();					// Check for input
+				break;
+			case sf::Event::JoystickButtonPressed:
+				InputHandler::setInputMode(InputHandler::Mode::JOYSTICK);
+				InputHandler::setJoystickIndex(mEvent.joystickButton.joystickId);
+				break;
+			case sf::Event::JoystickMoved:
+				InputHandler::setInputMode(InputHandler::Mode::JOYSTICK);
+				InputHandler::setJoystickIndex(mEvent.joystickMove.joystickId);
+				break;
+			case sf::Event::Closed:
+				window->close();
+				return 0;
+				break;
+			case sf::Event::Resized:
+				window->setView(sf::View(sf::FloatRect(0, 0, float (mEvent.size.width), float (mEvent.size.height))));
+				view = window->getView();
+				window->setView(view);
+				break;
+			case sf::Event::LostFocus:
+				 inFocus = false;
+				break;
+			case sf::Event::GainedFocus:
+				inFocus = true;
+				break;
+			}
+
+
 
 			// ---------- UPDATE ---------- //
 
 			// Check for termination, exit loop if true
-			if (event.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
+			if (mEvent.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
 				window->close();
-
-			// Check for input
-			input = mInputHandler.update();
 
 			// Update player
 			mPlayer.update(input, mEntityManager);
-
-
 
 			// ---------- RENDER ---------- //
 

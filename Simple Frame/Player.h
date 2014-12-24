@@ -34,10 +34,10 @@ public:
 	sf::FloatRect& getBoundingBox();
 
 private:
-	std::shared_ptr <Animation>  walkLeft;
-	std::shared_ptr <Animation>  idleLeft;
-	std::shared_ptr <Animation>  walkRight;
-	std::shared_ptr <Animation>  idleRight;
+	std::shared_ptr <Animation> walkLeft;
+	std::shared_ptr <Animation> idleLeft;
+	std::shared_ptr <Animation> walkRight;
+	std::shared_ptr <Animation> idleRight;
 	std::shared_ptr <Animation> currentAnimation;
 	
 	Weapon wand;

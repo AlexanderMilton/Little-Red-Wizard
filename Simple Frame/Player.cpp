@@ -4,6 +4,7 @@
 #include "DebugOut.h"
 
 #include <SFML\Window\Mouse.hpp>
+#include <SFML\Window\Keyboard.hpp>
 
 
 const float walkSpeed= 9.9f;					// In 10 "Meters" per second
