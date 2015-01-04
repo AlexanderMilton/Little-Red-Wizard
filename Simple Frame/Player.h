@@ -51,9 +51,6 @@ private:
 	sf::Clock mJumpTimer;
 
 	sf::FloatRect ground;	// To be replaced by a world class
-	
-
-	sf::RectangleShape TEST;
 };
 
 #endif	// _PLAYER_

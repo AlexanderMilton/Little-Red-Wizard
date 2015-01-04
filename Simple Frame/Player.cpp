@@ -6,6 +6,7 @@
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Keyboard.hpp>
 
+#include <iostream> // Remove
 
 const float walkSpeed= 9.9f;					// In 10 "Meters" per second
 const float jumpSpeed = -1.2f;					// In 10 "Meters" per second
@@ -26,13 +27,9 @@ Player::Player() :
 	idleLeft	(std::make_shared<Animation>("left_idle.png", 100, 1)),
 	idleRight	(std::make_shared<Animation>("right_idle.png", 100, 1)),
 	currentAnimation(idleRight),
-	ground(0, 500, 720, 10),
-	TEST(mPosition)
+	ground(0, 500, 720, 10)
 {
 	mJumpTimer.restart();
-	
-	TEST.setSize(sf::Vector2f(3, 3));
-	TEST.setFillColor(sf::Color::Green);
 }
 
 Player::~Player()
@@ -49,6 +46,8 @@ void Player::update(int& input, EntityManager& entityManager)
 	handleWalk(input);
 
 	handleGravity();
+
+	handlePosition();
 
 	
 
@@ -72,7 +71,8 @@ void Player::update(int& input, EntityManager& entityManager)
 		mPosition = startingPosition;
 	}
 
-	TEST.setPosition(mPosition);
+	std::cout << "mVelocity.x : " << mVelocity.x << "\tmVelocity.y : " << mVelocity.y << std::endl;
+	std::cout << "mPosition.x : " << mPosition.x << "\tmPosition.y : " << mPosition.y << std::endl;
 
 	// Update animation
 	currentAnimation->update();
@@ -82,7 +82,6 @@ void Player::update(int& input, EntityManager& entityManager)
 void Player::draw(std::shared_ptr<sf::RenderWindow> window)
 {
 	window->draw(getSprite());
-	window->draw(TEST);
 }
 
 void Player::handleWalk(int& input)
@@ -103,9 +102,11 @@ void Player::handleWalk(int& input)
 		mFacingLeft = false;
 	}
 
-	// Idle
+	// Decceleration
 	else
 	{
+		mVelocity /= 2.0f;
+
 		if (mVelocity.x > 0.1f){
 			currentAnimation = idleRight;
 		}
@@ -113,9 +114,11 @@ void Player::handleWalk(int& input)
 		if (mVelocity.x < -0.1f){
 			currentAnimation = idleLeft;
 		}
-
-		mVelocity.x = 0;
 	}
+
+	// Stop
+	if (mVelocity.x < 0.1 && mVelocity.x > -0.1)
+		mVelocity.x = 0;
 }
 
 void Player::handleJump(int& input)

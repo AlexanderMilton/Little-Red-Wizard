@@ -27,18 +27,19 @@ GameEngine::~GameEngine()
 int GameEngine::run()
 {
 	
-		// -------------------- MAIN LOOP -------------------- //
+	// -------------------- MAIN LOOP -------------------- //
 
 	while (window->isOpen())
 	{
 
-		while (window->pollEvent(mEvent))
+		while (window->isOpen())
 		{
+			window->pollEvent(mEvent);
 
 			switch (mEvent.type)
 			{
 			case sf::Event::KeyPressed:
-				input = InputHandler::getGameInput();					// Check for input
+				input = InputHandler::getGameInput();		// Check for input
 				break;
 			case sf::Event::JoystickButtonPressed:
 				InputHandler::setInputMode(InputHandler::Mode::JOYSTICK);
@@ -47,10 +48,6 @@ int GameEngine::run()
 			case sf::Event::JoystickMoved:
 				InputHandler::setInputMode(InputHandler::Mode::JOYSTICK);
 				InputHandler::setJoystickIndex(mEvent.joystickMove.joystickId);
-				break;
-			case sf::Event::Closed:
-				window->close();
-				return 0;
 				break;
 			case sf::Event::Resized:
 				window->setView(sf::View(sf::FloatRect(0, 0, float (mEvent.size.width), float (mEvent.size.height))));
@@ -63,15 +60,14 @@ int GameEngine::run()
 			case sf::Event::GainedFocus:
 				inFocus = true;
 				break;
+			case sf::Event::Closed:
+			case InputHandler::Input::ESCAPE:
+				window->close();
+				return 0;
 			}
 
 
-
 			// ---------- UPDATE ---------- //
-
-			// Check for termination, exit loop if true
-			if (mEvent.type == sf::Event::Closed || input == InputHandler::Input::ESCAPE)
-				window->close();
 
 			// Update player
 			mPlayer.update(input, mEntityManager);
